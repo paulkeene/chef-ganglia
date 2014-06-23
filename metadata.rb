@@ -16,3 +16,5 @@ recommends "graphite"
 depends "iptables"
 
 depends "runit"
+
+depends "apt"

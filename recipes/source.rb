@@ -1,8 +1,12 @@
-if platform?( "redhat", "centos", "fedora" )
+if platform_family?("rhel")
   package "apr-devel"
   package "libconfuse-devel"
   package "expat-devel"
   package "rrdtool-devel"
+elsif platform_family?("debian")
+  package "librrd-dev"
+  package "libapr1-dev"
+  package "libconfuse-dev"
 end
 
 remote_file "/usr/src/ganglia-#{node['ganglia']['version']}.tar.gz" do
@@ -43,3 +47,21 @@ link "/usr/lib/ganglia" do
       platform?( "redhat", "centos", "fedora" )
   end
 end
+
+if platform_family?("debian")
+  cookbook_file "/etc/init.d/ganglia-monitor" do
+    source "ganglia-monitor"
+    mode 0755
+    owner "root"
+    group "root"
+  end
+else
+  execute "copy ganglia-monitor init script" do
+    command "cp " +
+      "/usr/src/ganglia-#{node['ganglia']['version']}/gmond/gmond.init " +
+      "/etc/init.d/ganglia-monitor"
+    not_if "test -f /etc/init.d/ganglia-monitor"
+  end
+end
+
+user "ganglia"

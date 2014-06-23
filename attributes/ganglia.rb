@@ -13,6 +13,12 @@ default['ganglia']['spoof_hostname'] = false
 
 default['ganglia']['mod_path'] = ''
 
+if platform_family?("debian")
+  default['ganglia']['install_method'] = 'source'
+else
+  default['ganglia']['install_method'] = 'source'
+end
+
 # Uncomment this to override the search for server_role and just specify the host instead
 # default['ganglia']['server_host'] = 'ganglia.example.com'
 

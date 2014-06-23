@@ -17,21 +17,7 @@
 # limitations under the License.
 #
 
-case node['platform']
-when "ubuntu", "debian"
-  package "ganglia-monitor"
-when "redhat", "centos", "fedora"
-  include_recipe "ganglia::source"
-
-  execute "copy ganglia-monitor init script" do
-    command "cp " +
-      "/usr/src/ganglia-#{node['ganglia']['version']}/gmond/gmond.init " +
-      "/etc/init.d/ganglia-monitor"
-    not_if "test -f /etc/init.d/ganglia-monitor"
-  end
-
-  user "ganglia"
-end
+include_recipe "ganglia::#{node['ganglia']['install_method']}"
 
 directory "/etc/ganglia"
 
